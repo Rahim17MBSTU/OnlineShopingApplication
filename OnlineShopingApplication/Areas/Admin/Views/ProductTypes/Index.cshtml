@@ -1,0 +1,67 @@
+﻿@model IEnumerable<ProductTypes>
+@{
+	ViewData["Title"] = "Index";
+}
+<br />
+<br />
+<div class="row"> 
+	<div class="col-6"> 
+		<h2 class="text-info">Product Type List</h2> 
+	</div> 
+	<div class="col-6 text-right">
+    <a asp-action="Create" class="btn btn-info">
+        <i class="fa-solid fa-plus "></i> Create New Product
+    </a>
+</div>
+
+</div>
+
+
+    <table class="table table-bordered table-dark" style="width: auto; min-width: 850px;">
+        <thead class="thead-dark">
+            <tr class="table-info">
+                <th style="width: 66%;">@Html.DisplayNameFor(model => model.ProductType)</th>
+                <th class="text-center" style="width: 34%;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+				    <td>@Html.DisplayFor(modelItem => item.ProductType)</td>
+				
+                    <partial name="_ButtonPartialView" model="@item.Id" />
+            
+                   
+                </tr>
+            }
+        </tbody>
+    </table>
+
+
+
+@section Scripts {
+	<script src="https://kit.fontawesome.com/your-kit-code.js" crossorigin="anonymous"></script>
+    <!-- JavaScript -->
+	<script src="//cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/alertify.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.table').DataTable();
+        });
+	</script>
+    <script type="text/javascript">
+        $(function() {
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <text>
+                        alertify.set('notifier', 'position', 'top-right');
+                        alertify.success('@Html.Raw(TempData["SuccessMessage"])');
+                    @{
+                        // Clear immediately after display
+                        TempData.Remove("SuccessMessage");
+                    }
+                </text>
+            }
+        });
+    </script>
+}
