@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
 using OnlineShopingApplication.Data;
 using OnlineShopingApplication.Models;
 using static System.Collections.Specialized.BitVector32;
@@ -169,7 +170,8 @@ namespace OnlineShopingApplication.Areas.Admin.Controllers
                 return NotFound();
             }
             _context.Products.Remove(products);
-          
+            
+            TempData["DeleteSuccessMessage"] = "Product Delete successfully!";
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

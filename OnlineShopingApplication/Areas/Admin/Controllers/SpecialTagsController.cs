@@ -121,7 +121,7 @@ namespace OnlineShopingApplication.Areas.Admin.Controllers
             }
 
             _context.SpecialTags.Remove(specialTags);
-            TempData["SuccessMessage"] = "Product Deleted successfully!";
+            TempData["DeleteSuccessMessage"] = "Product Delete successfully!";
             await _context.SaveChangesAsync();
             return RedirectToAction("Index", "SpecialTags");
 

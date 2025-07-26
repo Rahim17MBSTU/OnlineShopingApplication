@@ -121,7 +121,7 @@ namespace OnlineShopingApplication.Areas.Admin.Controllers
             }
             
             _context.ProductTypes.Remove(productTypes);
-            TempData["SuccessMessage"] = "Product Deleted successfully!";
+            TempData["DeleteSuccessMessage"] = "Product Delete successfully!";
             await _context.SaveChangesAsync();
             return RedirectToAction("Index", "ProductTypes");    
            

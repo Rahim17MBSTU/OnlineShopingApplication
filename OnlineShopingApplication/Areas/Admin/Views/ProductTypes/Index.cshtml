@@ -62,6 +62,14 @@
                     }
                 </text>
             }
+            @if (TempData["DeleteSuccessMessage"] != null)
+            {
+                <text>
+                    alertify.set('notifier','position','top-right');
+                    alertify.error('@Html.Raw(TempData["DeleteSuccessMessage"])');
+                    @TempData.Remove("DeleteSuccessMessage");
+                </text>
+            }
         });
     </script>
 }

@@ -65,9 +65,9 @@
                 <td>@product.DateAdded</td>
                 <td>@product.ProductTypes.ProductType</td>
                 <td>@product.SpecialTags.SpecialTagName</td>
-              
+
                 <partial name="_ButtonPartialView" model="@product.Id" />
-                
+
             </tr>
         }
 
@@ -82,7 +82,7 @@
     <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/alertify.min.js"></script>
     <script>
         $(document).ready(function () {
-            $('.table').DataTable();
+        $('.table').DataTable();
         });
     </script>
     <script type="text/javascript">
@@ -90,12 +90,20 @@
         @if (TempData["SuccessMessage"] != null)
         {
             <text>
-                            alertify.set('notifier', 'position', 'top-right');
-                            alertify.success('@Html.Raw(TempData["SuccessMessage"])');
+                alertify.set('notifier', 'position', 'top-right');
+                alertify.success('@Html.Raw(TempData["SuccessMessage"])');
                 @{
                     // Clear immediately after display
                     TempData.Remove("SuccessMessage");
                 }
+            </text>
+        }
+        @if (TempData["DeleteSuccessMessage"] != null)
+        {
+            <text>
+                alertify.set('notifier','position','top-right');
+                alertify.error('@Html.Raw(TempData["DeleteSuccessMessage"])');
+                @TempData.Remove("DeleteSuccessMessage");
             </text>
         }
         });
