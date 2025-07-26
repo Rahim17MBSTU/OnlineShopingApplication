@@ -48,7 +48,10 @@ namespace OnlineShopingApplication.Areas.Admin.Controllers
                     await image.CopyToAsync(new FileStream(fileName, FileMode.Create));
                     products.Image = "Images/" + Path.GetFileName(image.FileName);
                 }
-                
+                if(image == null)
+                {
+                    products.Image = "Images/No image.png";
+                }
               
                 _context.Products.Add(products);
                 TempData["SuccessMessage"] = "Product created successfully!"; await _context.SaveChangesAsync();

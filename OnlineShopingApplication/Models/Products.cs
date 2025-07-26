@@ -9,6 +9,7 @@ namespace OnlineShopingApplication.Models
 
 
         [Required(ErrorMessage="Product name is Required")]
+        [Display(Name="Product Name")]
         public string Name { get; set; }
 
 
