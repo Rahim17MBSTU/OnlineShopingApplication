@@ -68,5 +68,53 @@ namespace OnlineShopingApplication.Areas.Admin.Controllers
             ViewBag.SpecialTagsId = new SelectList(_context.SpecialTags.ToList(), "Id", "SpecialTagName");
             return View(products);
         }
+        //Get Http Action Method
+        [HttpGet]
+        public IActionResult Edit(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            ViewBag.ProductTypesId = new SelectList(_context.ProductTypes.ToList(), "Id", "ProductType");
+            ViewBag.SpecialTagsId = new SelectList(_context.SpecialTags.ToList(), "Id", "SpecialTagName");
+            var products =  _context.Products.Include(p => p.ProductTypes).Include(p=>p.SpecialTags).FirstOrDefault(p=>p.Id == id);
+            
+            if(products == null)
+            {
+                return NotFound();
+            }
+
+            return View(products);
+        }
+        // Post Http Action Mehtod for Edit
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(Products products, IFormFile? image)
+        {
+            if (ModelState.IsValid)
+            {
+                if (image != null)
+                {
+                    var fileName = Path.Combine(_webHostEnvironment.WebRootPath + "/Images", Path.GetFileName(image.FileName));
+                    await image.CopyToAsync(new FileStream(fileName, FileMode.Create));
+                    products.Image = "Images/" + Path.GetFileName(image.FileName);
+                }
+                if (image == null)
+                {
+                    products.Image = "Images/No image.png";
+                }
+
+                _context.Products.Update(products);
+                TempData["SuccessMessage"] = "Product Updated successfully!"; await _context.SaveChangesAsync();
+                return RedirectToAction("Index", "Product");
+
+                
+            }
+            ViewBag.ProductTypesId = new SelectList(_context.ProductTypes.ToList(), "Id", "ProductType");
+            ViewBag.SpecialTagsId = new SelectList(_context.SpecialTags.ToList(), "Id", "SpecialTagName");
+            return View(products);
+        }
     }
 }
