@@ -107,7 +107,8 @@ namespace OnlineShopingApplication.Areas.Admin.Controllers
                 }
 
                 _context.Products.Update(products);
-                TempData["SuccessMessage"] = "Product Updated successfully!"; await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Product Updated successfully!"; 
+                await _context.SaveChangesAsync();
                 return RedirectToAction("Index", "Product");
 
                 
@@ -115,6 +116,26 @@ namespace OnlineShopingApplication.Areas.Admin.Controllers
             ViewBag.ProductTypesId = new SelectList(_context.ProductTypes.ToList(), "Id", "ProductType");
             ViewBag.SpecialTagsId = new SelectList(_context.SpecialTags.ToList(), "Id", "SpecialTagName");
             return View(products);
+        }
+        [HttpGet]
+        public IActionResult Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            ViewBag.ProductTypesId = new SelectList(_context.ProductTypes.ToList(), "Id", "ProductType");
+            ViewBag.SpecialTagsId = new SelectList(_context.SpecialTags.ToList(), "Id", "SpecialTagName");
+            var products = _context.Products.Include(p => p.ProductTypes).Include(p => p.SpecialTags).FirstOrDefault(p => p.Id == id);
+
+            if (products == null)
+            {
+                return NotFound();
+            }
+
+            return View(products);
+            
         }
     }
 }
