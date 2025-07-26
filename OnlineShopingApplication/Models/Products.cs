@@ -20,7 +20,7 @@ namespace OnlineShopingApplication.Models
 
 
         [Display(Name="Product Image URL")]
-        [Url(ErrorMessage ="Please Enter a valid URL")]
+        
         public string? Image { get; set; }
 
 
@@ -44,22 +44,22 @@ namespace OnlineShopingApplication.Models
         public DateTime DateAdded { get; set; } = DateTime.Now;
 
 
-        [Required]
+        [Required(ErrorMessage ="Product Type is required")]
         [Display(Name="Product Type")]
         public int ProductTypesId { get; set; }
 
 
         [ForeignKey("ProductTypesId")]
-        public ProductTypes ProductTypes { get; set; }
+        public virtual ProductTypes? ProductTypes { get; set; }
 
 
-        [Required]
+        [Required(ErrorMessage ="Special Tag is required")]
         [Display(Name="Special Tag")]
         public int SpecialTagsId { get; set; }
 
 
         [ForeignKey("SpecialTagsId")]
-        public SpecialTags SpecialTags { get; set; }
+        public virtual SpecialTags? SpecialTags { get; set; }
 
     }
 }

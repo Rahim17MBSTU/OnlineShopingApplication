@@ -24,9 +24,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Price)
             </th>
-            <th>
-				@Html.DisplayNameFor(model => model.Image)
-            </th>
+    @*         <th> *@
+				@* @Html.DisplayNameFor(model => model.Image) *@
+    @*         </th> *@
             <th>
                 @Html.DisplayNameFor(model => model.ProductColor)
             </th>
@@ -40,10 +40,10 @@
                 @Html.DisplayNameFor(model => model.DateAdded)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ProductTypes)
+                @Html.DisplayNameFor(model => model.ProductTypesId)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.SpecialTags)
+                @Html.DisplayNameFor(model => model.SpecialTagsId)
             </th>
             <th class="text-center">Actions</th>
         </tr>
@@ -54,13 +54,13 @@
             <tr>
                 <td>@product.Name</td>
                 <td>@product.Price</td>
-                <td>@product.Image</td>
+                @* <td>@product.Image</td> *@
                 <td>@product.ProductColor</td>
                 <td>@product.IsAvailable</td>
                 <td>@product.StockQuantity</td>
                 <td>@product.DateAdded</td>
-                <td>@product.ProductTypes</td>
-                <td>@product.SpecialTags</td>
+                <td>@product.ProductTypes.ProductType</td>
+                <td>@product.SpecialTags.SpecialTagName</td>
                 <td>
                     <partial name="_ButtonPartialView" model="@product.Id" />
                 </td>
