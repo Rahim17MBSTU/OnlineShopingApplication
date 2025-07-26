@@ -137,5 +137,42 @@ namespace OnlineShopingApplication.Areas.Admin.Controllers
             return View(products);
             
         }
+        // Http Delete Method 
+        [HttpGet]
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+            ViewBag.ProductTypesId = new SelectList(_context.ProductTypes.ToList(), "Id", "ProductType");
+            ViewBag.SpecialTagsId = new SelectList(_context.SpecialTags.ToList(), "Id", "SpecialTagName");
+            var products = await _context.Products.Include(p => p.ProductTypes).Include(p => p.SpecialTags).FirstOrDefaultAsync(p => p.Id == id);
+            if(products == null)
+            {
+                return NotFound();
+            }
+            return View(products);
+        }
+        [HttpPost]
+        [ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirm(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+            var products = await _context.Products.FirstOrDefaultAsync(p => p.Id == id);
+            if (products == null)
+            {
+                return NotFound();
+            }
+            _context.Products.Remove(products);
+          
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
     }
 }
