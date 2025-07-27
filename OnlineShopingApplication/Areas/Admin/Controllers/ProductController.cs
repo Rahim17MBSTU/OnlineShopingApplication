@@ -24,6 +24,12 @@ namespace OnlineShopingApplication.Areas.Admin.Controllers
             var Product = _context.Products.Include(p => p.ProductTypes).Include(q => q.SpecialTags).ToList();
             return View(Product);
         }
+        [HttpPost]
+        public IActionResult Index(decimal lowAmount, decimal highAmount) // highAmount
+        {
+            var products = _context.Products.Include(p=>p.ProductTypes).Include(p=>p.SpecialTags).Where(p=>p.Price >= lowAmount && p.Price <= highAmount).ToList();
+            return View(products);
+        } 
 
         //Create Http Get Action Method
       
@@ -105,6 +111,15 @@ namespace OnlineShopingApplication.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
+                var searchProduct = await _context.Products.FirstOrDefaultAsync(p => p.Name == products.Name);
+
+                if (searchProduct != null)
+                {
+                    TempData["message"] = "Product already exists.";
+                    ViewBag.ProductTypesId = new SelectList(_context.ProductTypes.ToList(), "Id", "ProductType");
+                    ViewBag.SpecialTagsId = new SelectList(_context.SpecialTags.ToList(), "Id", "SpecialTagName");
+                    return View(products);
+                }
                 if (image != null)
                 {
                     var fileName = Path.Combine(_webHostEnvironment.WebRootPath + "/Images", Path.GetFileName(image.FileName));

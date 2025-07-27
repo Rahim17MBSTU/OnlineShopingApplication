@@ -42,7 +42,7 @@ namespace OnlineShopingApplication.Models
         // Date tracking
         [Display(Name = "Date Added")]
         [DataType(DataType.Date)]
-        public DateTime DateAdded { get; set; } = DateTime.Now;
+        public DateTime DateAdded { get; set; } = DateTime.Now.Date;
 
 
         [Required(ErrorMessage ="Product Type is required")]
