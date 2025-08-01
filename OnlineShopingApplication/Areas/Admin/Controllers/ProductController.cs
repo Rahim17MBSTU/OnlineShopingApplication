@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
 using OnlineShopingApplication.Data;
 using OnlineShopingApplication.Models;
+using System;
 using static System.Collections.Specialized.BitVector32;
 
 namespace OnlineShopingApplication.Areas.Admin.Controllers
@@ -20,14 +21,49 @@ namespace OnlineShopingApplication.Areas.Admin.Controllers
         }
         public IActionResult Index()
         {
-
+            ViewBag.SearchFields = new Dictionary<string, string>()
+            {
+                {nameof(Products.Name), "Products Name"},
+                {nameof(Products.Price),"Products Price" },
+                {nameof(Products.ProductColor),"Product Color" },
+                {nameof(Products.StockQuantity),"Stock Quantity" },
+                {nameof(Products.DateAdded),"Date" },
+                {nameof(Products.ProductTypes),"Product Types" },
+                {nameof(Products.SpecialTags),"Special Tags" }
+            };
             var Product = _context.Products.Include(p => p.ProductTypes).Include(q => q.SpecialTags).ToList();
             return View(Product);
         }
         [HttpPost]
-        public IActionResult Index(decimal lowAmount, decimal highAmount) // highAmount
+        public IActionResult Index(decimal? lowAmount, decimal? highAmount,string searchString) // highAmount
         {
-            var products = _context.Products.Include(p=>p.ProductTypes).Include(p=>p.SpecialTags).Where(p=>p.Price >= lowAmount && p.Price <= highAmount).ToList();
+
+            //var products = _context.Products.Include(p=>p.ProductTypes).Include(p=>p.SpecialTags).Where(p=>p.Price >= lowAmount && p.Price <= highAmount).ToList();
+
+            //if(lowAmount == null || highAmount == null)
+            //{
+            //    products = _context.Products.Include(p => p.ProductTypes).Include(p => p.SpecialTags).ToList();
+
+            //}
+            ViewBag.SearchString = searchString;
+            ViewBag.LowAmount = lowAmount;
+            ViewBag.HighAmount = highAmount;
+            var products = _context.Products.Include(p => p.ProductTypes).Include(p => p.SpecialTags).AsQueryable();
+            if (lowAmount != null && highAmount != null)
+            {
+                products = products.Where(p => p.Price >= lowAmount && p.Price <= highAmount);
+            }
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                products = products.Where(p => p.Name.Contains(searchString) ||
+                p.Price.ToString().Contains(searchString)||
+                p.ProductColor.Contains(searchString) ||
+                p.IsAvailable.ToString().Contains(searchString) ||
+                p.StockQuantity.ToString().Contains(searchString) ||
+                p.DateAdded.ToString().Contains(searchString) ||
+                p.ProductTypes.ProductType.Contains(searchString) ||
+                p.SpecialTags.SpecialTagName.Contains(searchString));
+            }
             return View(products);
         } 
 
