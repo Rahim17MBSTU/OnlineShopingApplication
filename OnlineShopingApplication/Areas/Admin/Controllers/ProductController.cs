@@ -19,40 +19,51 @@ namespace OnlineShopingApplication.Areas.Admin.Controllers
             _context = context;
             _webHostEnvironment = webHostEnvironment;
         }
-        public IActionResult Index()
+        //public IActionResult Index()
+        //{
+        //    ViewBag.SearchFields = new Dictionary<string, string>()
+        //    {
+        //        {nameof(Products.Name), "Products Name"},
+        //        {nameof(Products.Price),"Products Price" },
+        //        {nameof(Products.ProductColor),"Product Color" },
+        //        {nameof(Products.StockQuantity),"Stock Quantity" },
+        //        {nameof(Products.DateAdded),"Date" },
+        //        {nameof(Products.ProductTypes),"Product Types" },
+        //        {nameof(Products.SpecialTags),"Special Tags" }
+        //    };
+        //    var Product = _context.Products.Include(p => p.ProductTypes).Include(q => q.SpecialTags).ToList();
+        //    return View(Product);
+        //}
+        //[HttpPost]
+        public IActionResult Index(decimal? lowAmount, decimal? highAmount,string searchString,string sortOrder) //lowAmount, highAmount, SearchString, SortOrder
         {
-            ViewBag.SearchFields = new Dictionary<string, string>()
-            {
-                {nameof(Products.Name), "Products Name"},
-                {nameof(Products.Price),"Products Price" },
-                {nameof(Products.ProductColor),"Product Color" },
-                {nameof(Products.StockQuantity),"Stock Quantity" },
-                {nameof(Products.DateAdded),"Date" },
-                {nameof(Products.ProductTypes),"Product Types" },
-                {nameof(Products.SpecialTags),"Special Tags" }
-            };
-            var Product = _context.Products.Include(p => p.ProductTypes).Include(q => q.SpecialTags).ToList();
-            return View(Product);
-        }
-        [HttpPost]
-        public IActionResult Index(decimal? lowAmount, decimal? highAmount,string searchString) // highAmount
-        {
 
-            //var products = _context.Products.Include(p=>p.ProductTypes).Include(p=>p.SpecialTags).Where(p=>p.Price >= lowAmount && p.Price <= highAmount).ToList();
+            //Searching Value Store
+            ViewBag.SearchString = searchString;// Value store in the field using ViewBag
+            ViewBag.LowAmount = lowAmount; // Value store in the field using ViewBag
+            ViewBag.HighAmount = highAmount; // Value store in the field using ViewBag
 
-            //if(lowAmount == null || highAmount == null)
-            //{
-            //    products = _context.Products.Include(p => p.ProductTypes).Include(p => p.SpecialTags).ToList();
+            // Sorting Value Store
+            ViewData["NameSortParam"] = sortOrder == "Name" ? "name_desc" : "Name";
+            ViewData["PriceSortParam"] = sortOrder == "Price" ? "price_desc" : "Price";
+            ViewData["ProductColorSortParam"] = sortOrder == "ProductColor" ? "productColor_desc" : "ProductColor";
+            ViewData["AvailableSortParam"] = sortOrder == "Available" ? "available_desc" : "Available";
+            ViewData["StockSortParam"] = sortOrder == "Stock" ? "stock_desc" : "Stock";
+            ViewData["DateSortParam"] = sortOrder == "Date" ? "date_desc" : "Date";
+            ViewData["ProductTypeSortParam"] = sortOrder == "ProductType" ? "productType_desc" : "ProductType";
+            ViewData["SpecialTagSortParam"] = sortOrder == "SpecialTag" ? "specialTag_desc" : "SpecialTag";
 
-            //}
-            ViewBag.SearchString = searchString;
-            ViewBag.LowAmount = lowAmount;
-            ViewBag.HighAmount = highAmount;
             var products = _context.Products.Include(p => p.ProductTypes).Include(p => p.SpecialTags).AsQueryable();
+            
+
+            // Range based Search 
             if (lowAmount != null && highAmount != null)
             {
                 products = products.Where(p => p.Price >= lowAmount && p.Price <= highAmount);
             }
+
+
+            // Search functionality 
             if (!string.IsNullOrEmpty(searchString))
             {
                 products = products.Where(p => p.Name.Contains(searchString) ||
@@ -64,7 +75,60 @@ namespace OnlineShopingApplication.Areas.Admin.Controllers
                 p.ProductTypes.ProductType.Contains(searchString) ||
                 p.SpecialTags.SpecialTagName.Contains(searchString));
             }
-            return View(products);
+
+
+            // Sorting functionality 
+            switch(sortOrder){
+                case "name_desc":
+                    products = products.OrderByDescending(p=> p.Name);
+                    break;
+                case "Price":
+                    products = products.OrderBy(p => p.Price);
+                    break;
+                case "price_desc":
+                    products = products.OrderByDescending(p => p.Price);
+                    break;
+                case "ProductColor":
+                    products = products.OrderBy(p => p.ProductColor);
+                    break;
+                case "productColor_desc":
+                    products = products.OrderByDescending(p => p.ProductColor);
+                    break;
+                case "Available":
+                    products = products.OrderBy(p => p.IsAvailable);
+                    break;
+                case "available_desc":
+                    products = products.OrderByDescending(p => p.IsAvailable);
+                    break;
+                case "Date":
+                    products = products.OrderBy(p => p.DateAdded);
+                    break;
+                case "date_desc":
+                    products = products.OrderByDescending(p => p.DateAdded);
+                    break;
+                case "Stock":
+                    products = products.OrderBy(p => p.StockQuantity);
+                    break;
+                case "stock_desc":
+                    products = products.OrderByDescending(p => p.StockQuantity);
+                    break;
+                case "ProductType":
+                    products = products.OrderBy(p => p.ProductTypes.ProductType);
+                    break;
+                case "productType_desc":
+                    products = products.OrderByDescending(p => p.ProductTypes.ProductType);
+                    break;
+                case "SpecialTag":
+                    products = products.OrderBy(p => p.SpecialTags.SpecialTagName);
+                    break;
+                case "specialTag_desc":
+                    products = products.OrderByDescending(p => p.SpecialTags.SpecialTagName);
+                    break;
+                default:
+                    products = products.OrderBy(p => p.Name);
+                    break;
+            }
+            return View(products.ToList());
         } 
 
         //Create Http Get Action Method
