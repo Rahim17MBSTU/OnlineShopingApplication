@@ -11,7 +11,7 @@
     </a>
 </div>
 
-<form method="post">
+<form method="get" asp-action="Index">
     <div class="row align-items-end">
 
         <!-- Low and High Amount Filter -->
@@ -26,14 +26,20 @@
         </div>
 
         <!-- Search by Name -->
-        <div class="col-md-4">
+        <div class="col-md-3">
             <input type="text" name="searchString" value="@ViewBag.SearchString" class="form-control" placeholder="Search by any Field..." />
         </div>
         <div class="col-md-2">
             <button type="submit" name="filterType" value="name" class="btn btn-success w-100">Search</button>
         </div>
+
+        <!-- Clear Button -->
+        <div class="col-md-1 mt-2">
+            <a asp-action="Index" class="btn btn-secondary w-100 ">Clear</a>
+        </div>
     </div>
 </form>
+
 
 <br />
 
