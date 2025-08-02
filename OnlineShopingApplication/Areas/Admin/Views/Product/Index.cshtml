@@ -37,6 +37,30 @@
 
 <br />
 
+<form method="get" asp-controller="Product" asp-action="Index" class="form-inline mb-3">
+    <label for="pageSize" class="form-label">Items per page:</label>
+
+        @{
+            int pageSize = ViewBag.PageSize ?? 5;
+        }
+
+    <select name="pageSize" onchange="this.form.submit()">
+        <option value="5" selected="@(pageSize == 5 ? "selected" : null)">5</option>
+        <option value="10" selected="@(pageSize == 10 ? "selected" : null)">10</option>
+        <option value="20" selected="@(pageSize == 20 ? "selected" : null)">20</option>
+        <option value="50" selected="@(pageSize == 50 ? "selected" : null)">50</option>
+        <option value="100" selected="@(pageSize == 100 ? "selected" : null)">100</option>
+
+    </select>
+
+
+    <!-- Hidden fields to persist existing search/filter/sort values -->
+    <input type="hidden" name="searchString" value="@ViewBag.SearchString" />
+    <input type="hidden" name="lowAmount" value="@ViewBag.LowAmount" />
+    <input type="hidden" name="highAmount" value="@ViewBag.HighAmount" />
+    <input type="hidden" name="sortOrder" value="@ViewData["SortOrder"]" />
+</form>
+
 
 
 <table class="table table-bordered table-dark" style="width: 100%">
@@ -93,6 +117,65 @@
 
     </tbody>
 </table>
+@if (ViewBag.TotalItems > ViewBag.PageSize)
+{
+    int totalPages = (int)Math.Ceiling((double)ViewBag.TotalItems / ViewBag.PageSize);
+    int currentPage = ViewBag.PageNumber;
+
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+
+            <!-- Previous -->
+            @if (currentPage > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-action="Index"
+                       asp-route-pageNumber="@(currentPage - 1)"
+                       asp-route-pageSize="@ViewBag.PageSize"
+                       asp-route-searchString="@ViewBag.SearchString"
+                       asp-route-lowAmount="@ViewBag.LowAmount"
+                       asp-route-highAmount="@ViewBag.HighAmount"
+                       asp-route-sortOrder="@ViewData["SortOrder"]">
+                        Previous
+                    </a>
+                </li>
+            }
+
+            <!-- Page Numbers -->
+            @for (int i = 1; i <= totalPages; i++)
+            {
+                <li class="page-item @(i == currentPage ? "active" : "")">
+                    <a class="page-link" asp-action="Index"
+                       asp-route-pageNumber="@i"
+                       asp-route-pageSize="@ViewBag.PageSize"
+                       asp-route-searchString="@ViewBag.SearchString"
+                       asp-route-lowAmount="@ViewBag.LowAmount"
+                       asp-route-highAmount="@ViewBag.HighAmount"
+                       asp-route-sortOrder="@ViewData["SortOrder"]">
+                        @i
+                    </a>
+                </li>
+            }
+
+            <!-- Next -->
+            @if (currentPage < totalPages)
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-action="Index"
+                       asp-route-pageNumber="@(currentPage + 1)"
+                       asp-route-pageSize="@ViewBag.PageSize"
+                       asp-route-searchString="@ViewBag.SearchString"
+                       asp-route-lowAmount="@ViewBag.LowAmount"
+                       asp-route-highAmount="@ViewBag.HighAmount"
+                       asp-route-sortOrder="@ViewData["SortOrder"]">
+                        Next
+                    </a>
+                </li>
+            }
+
+        </ul>
+    </nav>
+}
 
 
 

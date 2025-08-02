@@ -19,23 +19,9 @@ namespace OnlineShopingApplication.Areas.Admin.Controllers
             _context = context;
             _webHostEnvironment = webHostEnvironment;
         }
-        //public IActionResult Index()
-        //{
-        //    ViewBag.SearchFields = new Dictionary<string, string>()
-        //    {
-        //        {nameof(Products.Name), "Products Name"},
-        //        {nameof(Products.Price),"Products Price" },
-        //        {nameof(Products.ProductColor),"Product Color" },
-        //        {nameof(Products.StockQuantity),"Stock Quantity" },
-        //        {nameof(Products.DateAdded),"Date" },
-        //        {nameof(Products.ProductTypes),"Product Types" },
-        //        {nameof(Products.SpecialTags),"Special Tags" }
-        //    };
-        //    var Product = _context.Products.Include(p => p.ProductTypes).Include(q => q.SpecialTags).ToList();
-        //    return View(Product);
-        //}
-        //[HttpPost]
-        public IActionResult Index(decimal? lowAmount, decimal? highAmount,string searchString,string sortOrder) //lowAmount, highAmount, SearchString, SortOrder
+        
+        public IActionResult Index(decimal? lowAmount, decimal? highAmount,string searchString,string sortOrder, int pageNumber = 1, int pageSize = 5) //lowAmount, highAmount, SearchString, SortOrder
+        
         {
 
             //Searching Value Store
@@ -128,7 +114,15 @@ namespace OnlineShopingApplication.Areas.Admin.Controllers
                     products = products.OrderBy(p => p.Name);
                     break;
             }
-            return View(products.ToList());
+
+            // Pagination Implementation
+            int totalItems = products.Count();
+            var paginatedItem = products.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            ViewBag.PageNumber = pageNumber;
+            ViewBag.PageSize = pageSize;
+            ViewBag.TotalItems = totalItems;
+            //return View(products.ToList());
+            return View(paginatedItem);
         } 
 
         //Create Http Get Action Method
