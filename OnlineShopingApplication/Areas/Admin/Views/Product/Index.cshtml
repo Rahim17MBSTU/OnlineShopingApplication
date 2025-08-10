@@ -68,8 +68,7 @@
 </form>
 
 
-
-<table class="table table-bordered table-dark" style="width: 100%">
+<table id="myTable" class="table table-bordered table-dark" style="width: 100%">
     <thead class="thead-dark">
         <tr class="table-info">
             <th>
@@ -123,6 +122,8 @@
 
     </tbody>
 </table>
+
+
 @if (ViewBag.TotalItems > ViewBag.PageSize)
 {
     int totalPages = (int)Math.Ceiling((double)ViewBag.TotalItems / ViewBag.PageSize);
@@ -190,11 +191,26 @@
     <!-- JavaScript -->
     <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.14.0/build/alertify.min.js"></script>
     <script>
-        $(document).ready(function () {
-        $('.table').DataTable();
+                $(document).ready(function () {
+            $('#myTable').DataTable({
+                searching: false,
+                paging: false,
+                ordering: false,
+                info: false,
+                dom: 'Bfrtip',
+                buttons: [
+                    { extend: 'copyHtml5',  exportOptions: { columns: ':not(:last-child)' } },
+                    { extend: 'csvHtml5',   exportOptions: { columns: ':not(:last-child)' } },
+                    { extend: 'excelHtml5', exportOptions: { columns: ':not(:last-child)' } },
+                    { extend: 'pdfHtml5',   exportOptions: { columns: ':not(:last-child)' } },
+                    { extend: 'print',      exportOptions: { columns: ':not(:last-child)' } }
+                ]
+            });
         });
     </script>
+    
     <script type="text/javascript">
+        
         $(function() {
         @if (TempData["SuccessMessage"] != null)
         {
