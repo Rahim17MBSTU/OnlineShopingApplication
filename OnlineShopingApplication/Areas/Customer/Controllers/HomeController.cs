@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OnlineShopingApplication.Data;
 using OnlineShopingApplication.Models;
+using OnlineShopingApplication.Utility;
 
 namespace OnlineShopingApplication.Areas.Customer.Controllers;
 
@@ -48,6 +49,29 @@ public class HomeController : Controller
         {
             return NotFound();
         }
+        return View(product);
+    }
+    [HttpPost]
+    [ActionName("Details")]
+    public ActionResult ProductDetails(int? id)
+    {
+        List<Products> products = new List<Products>();
+        if (id == null)
+        {
+            return NotFound();
+        }
+        var product = _context.Products.Include(p => p.ProductTypes).FirstOrDefault(p => p.Id == id);
+        if (product == null)
+        {
+            return NotFound();
+        }
+        products = HttpContext.Session.Get<List<Products>>("products");
+        if(products == null)
+        {
+            products = new List<Products>();
+        }
+        products.Add(product);
+        HttpContext.Session.Set("products", products);
         return View(product);
     }
 }
