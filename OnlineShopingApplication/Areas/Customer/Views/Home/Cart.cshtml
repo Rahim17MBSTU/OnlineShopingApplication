@@ -56,7 +56,7 @@
 	<div  style="max-width: fit-content; margin-left: auto;">
 		<h3>Total Amount</h3>
 		<h3>Grant Total: @Model.Sum(p => p.Price)</h3>
-		<a asp-action="Index" asp-controller="Home" class="btn btn-info">Check out</a>
+		<a asp-area="Customer" asp-action="Checkout" asp-controller="Order" class="btn btn-info">Check out</a>
 	</div>
 </div>
 

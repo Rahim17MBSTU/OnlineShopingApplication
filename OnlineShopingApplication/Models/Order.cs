@@ -20,6 +20,6 @@ namespace OnlineShopingApplication.Models
         public DateTime OrderDate { get; set; }
 
         // Navigation property
-        public List<OrderDetails> OrderDetails { get; set; }
+        public List<OrderDetails> OrderDetails { get; set; } = new List<OrderDetails>();
     }
 }
