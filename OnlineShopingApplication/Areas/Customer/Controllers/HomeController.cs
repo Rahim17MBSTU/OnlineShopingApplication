@@ -89,4 +89,16 @@ public class HomeController : Controller
         HttpContext.Session.Set("products", products);
         return RedirectToAction(nameof(Index));
     }
+
+    //Get product cart action method
+    public IActionResult Cart()
+    {
+        List<Products> products = HttpContext.Session.Get<List<Products>>("products");
+        if(products == null)
+        {
+            products = new List<Products>();
+        }
+
+        return View(products);
+    }
 }
