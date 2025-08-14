@@ -13,4 +13,6 @@ public class ApplicationDbContext : IdentityDbContext
     public DbSet<ProductTypes> ProductTypes { get; set; }
     public DbSet<SpecialTags> SpecialTags { get; set; }
     public DbSet<Products> Products { get; set; }
+    public DbSet<Order> Orders { get; set; }
+    public DbSet<OrderDetails> OrderDetails { get; set; }
 }
