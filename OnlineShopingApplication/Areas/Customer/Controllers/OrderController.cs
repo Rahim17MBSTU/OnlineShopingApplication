@@ -36,8 +36,13 @@ namespace OnlineShopingApplication.Areas.Customer.Controllers
             _context.Orders.Add(anOrder);
             await _context.SaveChangesAsync();
             HttpContext.Session.Set("products", new List<Products>());
-            return View();
+            TempData["OrderSuccess"] = "Your order has been placed successfully!";
+            return RedirectToAction("Index", "Home");
         } 
+        public IActionResult ConfirmOrder()
+        {
+            return View();
+        }
         public string GetOrderNo()
         {
             int rowCount = _context.Orders.ToList().Count();
