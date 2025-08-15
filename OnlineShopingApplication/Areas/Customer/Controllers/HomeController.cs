@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using OnlineShopingApplication.Data;
 using OnlineShopingApplication.Models;
 using OnlineShopingApplication.Utility;
+using X.PagedList.Extensions;
 
 namespace OnlineShopingApplication.Areas.Customer.Controllers;
 
@@ -20,10 +21,16 @@ public class HomeController : Controller
         
     }
     
-    public IActionResult Index()
+    public IActionResult Index(int? page)
     {
-        var product = _context.Products.Include(p => p.ProductTypes).Include(p => p.SpecialTags).ToList();
-        return View(product);
+        int pageSize = 9;
+        int pageNumber = page ?? 1;
+        var products = _context.Products
+                           .Include(p => p.ProductTypes)
+                           .Include(p => p.SpecialTags)
+                           .OrderBy(p => p.Id);
+        var pagedProducts = products.ToPagedList(pageNumber, pageSize);
+        return View(pagedProducts);
     }
 
     public IActionResult Privacy()

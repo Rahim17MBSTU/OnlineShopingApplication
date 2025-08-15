@@ -39,10 +39,6 @@ namespace OnlineShopingApplication.Areas.Customer.Controllers
             TempData["OrderSuccess"] = "Your order has been placed successfully!";
             return RedirectToAction("Index", "Home");
         } 
-        public IActionResult ConfirmOrder()
-        {
-            return View();
-        }
         public string GetOrderNo()
         {
             int rowCount = _context.Orders.ToList().Count();
