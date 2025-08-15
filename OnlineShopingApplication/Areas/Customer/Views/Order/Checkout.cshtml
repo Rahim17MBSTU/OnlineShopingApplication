@@ -1,4 +1,4 @@
-﻿@using OnlineShopingApplication.Utility
+﻿@* @* @using OnlineShopingApplication.Utility
 @using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor HttpContextAccessor
 @model Order
@@ -110,4 +110,128 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+} *@ 
+
+@using OnlineShopingApplication.Utility
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@model Order
+@{
+    ViewData["Title"] = "Complete Your Order";
+    List<Products> products = HttpContextAccessor.HttpContext.Session.Get<List<Products>>("products") ?? new List<Products>();
+}
+
+<div class="container py-4">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header text-dark bg-gradient-light" >
+                    <h3 class="mb-0"><i class="fas fa-user-circle me-2"></i>Customer Information</h3>
+                </div>
+                <div class="card-body">
+                    <form asp-area="Customer" asp-controller="Order" asp-action="Checkout" method="post">
+                        @Html.AntiForgeryToken()
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label asp-for="Name" class="form-label"></label>
+                                <input asp-for="Name" class="form-control" placeholder="Your full name">
+                                <span asp-validation-for="Name" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="PhoneNumber" class="form-label"></label>
+                                <input asp-for="PhoneNumber" class="form-control" placeholder="01XXXXXXXXX">
+                                <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label asp-for="Email" class="form-label"></label>
+                                <input asp-for="Email" class="form-control" placeholder="your@email.com">
+                                <span asp-validation-for="Email" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label asp-for="Address" class="form-label"></label>
+                                <textarea asp-for="Address" class="form-control" rows="3" placeholder="Your full shipping address"></textarea>
+                                <span asp-validation-for="Address" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="OrderDate" class="form-label"></label>
+                                <input asp-for="OrderDate" class="form-control" type="date">
+                                <span asp-validation-for="OrderDate" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            <a asp-action="Cart" asp-controller="Home" class="btn btn-outline-secondary me-md-2">
+                                <i class="fas fa-arrow-left me-1"></i> Back to Cart
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-check-circle me-1"></i> Place Order
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card sticky-top" style="top: 20px;">
+                <div class="card-header text-white" style="background-color: #3498db;">
+                    <h3 class="mb-0"><i class="fas fa-receipt me-2"></i>Order Summary</h3>
+                </div>
+                <div class="card-body">
+                    <div class="list-group mb-3">
+                        @foreach (var item in products)
+                        {
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <img src="~/@item.Image" class="img-thumbnail me-3" style="width: 60px; height: 60px; object-fit: cover;">
+                                        <div>
+                                            <h6 class="mb-0">@item.Name</h6>
+                                            <small class="text-muted">@item.ProductTypes.ProductType</small>
+                                        </div>
+                                    </div>
+                                    <span class="fw-bold">@item.Price.ToString("N2") Tk</span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Subtotal:</span>
+                        <span>@products.Sum(p => p.Price).ToString("N2") Tk</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span>Shipping:</span>
+                        <span>FREE</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between fw-bold fs-5">
+                        <span>Total:</span>
+                        <span class="text-success">@products.Sum(p => p.Price).ToString("N2") Tk</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        // Set default order date to today
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('OrderDate').value = today;
+        });
+    </script>
 }
